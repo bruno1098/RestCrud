@@ -20,7 +20,7 @@ public class RestCrudController {
     //função: Create
     @PostMapping
     public Usuario criarUsuario(@RequestBody Usuario usuario){
-        usuario.setId(generateNextId()); //Atribui um ID único
+        usuario.setId(usuario.getId()); //Atribui um ID único
         usuarios.add(usuario);
         return usuario;
     }
@@ -36,6 +36,19 @@ public class RestCrudController {
         //atualize outros atributos se necssário
 
         return usuarioExistente;
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluirUsuario(@PathVariable Long id){
+        usuarios.removeIf(u -> u.getId().equals(id));
+    }
+
+    @GetMapping("/{id}")
+    public Usuario consultarUsuarioPorId(@PathVariable Long id){
+        return usuarios.stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("Usuário não encontrado"));
     }
 
 }
